@@ -1,34 +1,28 @@
 package com.gordimv.rezeroengine.race;
 
+import java.util.Objects;
+
 /**
- * Holds race-specific information.
+ * ============================================================
+ * Project Lugunica
  *
- * Every race will have its own bonuses,
- * passive abilities, weaknesses,
- * and progression rules.
+ * RaceProfile
  *
- * This keeps race logic completely
- * separate from PlayerProfile.
+ * Stores the player's current race.
+ *
+ * Race-specific gameplay is implemented by dedicated
+ * race systems, not by this profile.
+ * ============================================================
  */
 public final class RaceProfile {
 
-    private RaceType race;
-
-    public RaceProfile() {
-        this.race = RaceType.HUMAN;
-    }
+    private RaceType race = RaceType.HUMAN;
 
     public RaceType getRace() {
         return race;
     }
 
     public void setRace(RaceType race) {
-        if (race != null) {
-            this.race = race;
-        }
-    }
-
-    public boolean isHuman() {
-        return race == RaceType.HUMAN;
+        this.race = Objects.requireNonNull(race, "race");
     }
 }

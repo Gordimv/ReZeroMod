@@ -1,29 +1,35 @@
 package com.gordimv.rezeroengine.magic;
 
+import java.util.Objects;
+
 /**
+ * ============================================================
+ * Project Lugunica
+ *
+ * Gate
+ *
  * Represents a player's Gate.
  *
- * The Gate regulates mana flow and determines
- * how much mana can safely be released.
+ * The Gate is the organ responsible for regulating the flow
+ * of mana throughout the body.
+ *
+ * It does not store mana itself.
+ * ============================================================
  */
 public final class Gate {
 
-    private GateState state;
+    /**
+     * Current condition of the Gate.
+     */
+    private GateState state = GateState.HEALTHY;
 
     /**
-     * Maximum safe mana output.
+     * Maximum amount of mana that can safely flow through the
+     * Gate at one time.
      */
-    private int outputCapacity;
-
-    /**
-     * Maximum mana storage.
-     */
-    private int storageCapacity;
+    private int manaOutput = 100;
 
     public Gate() {
-        this.state = GateState.HEALTHY;
-        this.outputCapacity = 100;
-        this.storageCapacity = 100;
     }
 
     public GateState getState() {
@@ -31,22 +37,14 @@ public final class Gate {
     }
 
     public void setState(GateState state) {
-        this.state = state;
+        this.state = Objects.requireNonNull(state, "state");
     }
 
-    public int getOutputCapacity() {
-        return outputCapacity;
+    public int getManaOutput() {
+        return manaOutput;
     }
 
-    public void setOutputCapacity(int outputCapacity) {
-        this.outputCapacity = Math.max(0, outputCapacity);
-    }
-
-    public int getStorageCapacity() {
-        return storageCapacity;
-    }
-
-    public void setStorageCapacity(int storageCapacity) {
-        this.storageCapacity = Math.max(0, storageCapacity);
+    public void setManaOutput(int manaOutput) {
+        this.manaOutput = Math.max(0, manaOutput);
     }
 }

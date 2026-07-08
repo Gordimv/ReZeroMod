@@ -1,5 +1,6 @@
 package com.gordimv.rezeroengine.save;
 
+import com.gordimv.rezeroengine.character.CharacterProfile;
 import com.gordimv.rezeroengine.magic.MagicProfile;
 import com.gordimv.rezeroengine.player.PlayerProfile;
 import com.gordimv.rezeroengine.race.RaceProfile;
@@ -8,51 +9,55 @@ import java.util.UUID;
 
 /**
  * ============================================================
- * ReZero Engine
+ * Project Lugunica
  *
  * PlayerData
  *
- * Master container for every player's data.
+ * Root container for every gameplay system that belongs
+ * to a single player.
  *
- * Every gameplay system owns its own Profile class.
- * PlayerData simply groups them together under one UUID.
- *
- * Future additions:
- *
- * CombatProfile
- * AuthorityProfile
- * DivineProtectionProfile
- * SpiritProfile
- * QuestProfile
- * RelationshipProfile
- * ReputationProfile
- * InventoryProfile
- * ReturnByDeathProfile
- *
- * None of those systems should know about each other.
+ * Every gameplay system owns its own Profile.
  * ============================================================
  */
 public final class PlayerData {
 
-    /**
-     * Player UUID.
+    /*
+     * =========================================================
+     * Identity
+     * =========================================================
      */
+
     private final UUID uuid;
 
-    /**
-     * Universal player information.
+    /*
+     * =========================================================
+     * Core Profiles
+     * =========================================================
      */
+
     private final PlayerProfile playerProfile;
 
-    /**
-     * Race system.
-     */
+    private final CharacterProfile characterProfile;
+
     private final RaceProfile raceProfile;
 
-    /**
-     * Magic system.
-     */
     private final MagicProfile magicProfile;
+
+    /*
+     * =========================================================
+     * Future Profiles
+     * =========================================================
+     *
+     * CombatProfile
+     * AuthorityProfile
+     * DivineProtectionProfile
+     * SpiritProfile
+     * QuestProfile
+     * ReputationProfile
+     * RelationshipProfile
+     * InventoryProfile
+     * ReturnByDeathProfile
+     */
 
     public PlayerData(UUID uuid, String playerName) {
 
@@ -60,17 +65,35 @@ public final class PlayerData {
 
         this.playerProfile = new PlayerProfile(uuid, playerName);
 
+        this.characterProfile = new CharacterProfile();
+
         this.raceProfile = new RaceProfile();
 
         this.magicProfile = new MagicProfile();
     }
 
+    /*
+     * =========================================================
+     * Identity
+     * =========================================================
+     */
+
     public UUID getUuid() {
         return uuid;
     }
 
+    /*
+     * =========================================================
+     * Profiles
+     * =========================================================
+     */
+
     public PlayerProfile getPlayerProfile() {
         return playerProfile;
+    }
+
+    public CharacterProfile getCharacterProfile() {
+        return characterProfile;
     }
 
     public RaceProfile getRaceProfile() {

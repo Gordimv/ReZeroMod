@@ -2,69 +2,70 @@ package com.gordimv.rezeroengine.magic;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * Stores all magic-related player data.
+ * ============================================================
+ * Project Lugunica
+ *
+ * MagicProfile
+ *
+ * Stores all persistent magic-related player data.
+ *
+ * This class owns a player's magical resources and progression.
+ *
+ * The Gate itself is represented by the Gate class.
+ * ============================================================
  */
 public final class MagicProfile {
 
-    private MagicType magicType;
+    /**
+     * Player's primary magic specialization.
+     */
+    private MagicType magicType = MagicType.NONE;
 
     /**
-     * Current Gate condition.
+     * The player's Gate.
      */
-    private GateState gateState;
-
-    /**
-     * Current Gate capacity.
-     */
-    private int gateCapacity;
+    private final Gate gate = new Gate();
 
     /**
      * Current Mana.
      */
-    private int mana;
+    private int mana = 100;
 
     /**
      * Maximum Mana.
      */
-    private int maxMana;
+    private int maxMana = 100;
 
     /**
-     * Current Od.
+     * Current Od (life force).
      */
-    private int od;
+    private int od = 100;
 
     /**
      * Maximum Od.
      */
-    private int maxOd;
+    private int maxOd = 100;
 
-    private final EnumMap<MagicAffinity, Integer> affinities;
+    /**
+     * Affinity with each magical attribute.
+     */
+    private final EnumMap<MagicAffinity, Integer> affinities =
+            new EnumMap<>(MagicAffinity.class);
 
-    private final EnumMap<MagicElement, Integer> masteries;
+    /**
+     * Mastery level for each magic element.
+     */
+    private final EnumMap<MagicElement, Integer> masteries =
+            new EnumMap<>(MagicElement.class);
 
     public MagicProfile() {
-
-        magicType = MagicType.NONE;
-
-        gateState = GateState.HEALTHY;
-
-        gateCapacity = 100;
-
-        maxMana = 100;
-        mana = maxMana;
-
-        maxOd = 100;
-        od = maxOd;
-
-        affinities = new EnumMap<>(MagicAffinity.class);
 
         for (MagicAffinity affinity : MagicAffinity.values()) {
             affinities.put(affinity, 0);
         }
-
-        masteries = new EnumMap<>(MagicElement.class);
 
         for (MagicElement element : MagicElement.values()) {
             masteries.put(element, 0);
@@ -76,23 +77,14 @@ public final class MagicProfile {
     }
 
     public void setMagicType(MagicType magicType) {
-        this.magicType = magicType;
+        this.magicType = Objects.requireNonNull(magicType, "magicType");
     }
 
-    public GateState getGateState() {
-        return gateState;
-    }
-
-    public void setGateState(GateState gateState) {
-        this.gateState = gateState;
-    }
-
-    public int getGateCapacity() {
-        return gateCapacity;
-    }
-
-    public void setGateCapacity(int gateCapacity) {
-        this.gateCapacity = Math.max(0, gateCapacity);
+    /**
+     * Returns the player's Gate.
+     */
+    public Gate getGate() {
+        return gate;
     }
 
     public int getMana() {
@@ -138,19 +130,31 @@ public final class MagicProfile {
     }
 
     public int getAffinity(MagicAffinity affinity) {
-        return affinities.get(affinity);
+        return affinities.getOrDefault(
+                Objects.requireNonNull(affinity, "affinity"),
+                0
+        );
     }
 
     public void setAffinity(MagicAffinity affinity, int value) {
-        affinities.put(affinity, Math.max(0, value));
+        affinities.put(
+                Objects.requireNonNull(affinity, "affinity"),
+                Math.max(0, value)
+        );
     }
 
     public int getMastery(MagicElement element) {
-        return masteries.get(element);
+        return masteries.getOrDefault(
+                Objects.requireNonNull(element, "element"),
+                0
+        );
     }
 
     public void setMastery(MagicElement element, int value) {
-        masteries.put(element, Math.max(0, value));
+        masteries.put(
+                Objects.requireNonNull(element, "element"),
+                Math.max(0, value)
+        );
     }
 
     public Map<MagicAffinity, Integer> getAffinities() {
