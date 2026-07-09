@@ -1,8 +1,11 @@
 package com.gordimv.rezeroengine.character.generation;
 
 import com.gordimv.rezeroengine.character.PotentialTier;
+import com.gordimv.rezeroengine.character.PotentialType;
 import com.gordimv.rezeroengine.util.random.WeightedTable;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -11,67 +14,52 @@ import java.util.Objects;
  *
  * GenerationProfile
  *
- * Defines how a character should be generated.
- *
- * Every CharacterPath owns one GenerationProfile.
- *
- * This keeps generation logic completely separate from
- * gameplay data.
+ * Stores the weighted generation tables for every
+ * PotentialType.
  * ============================================================
  */
 public final class GenerationProfile {
 
-    private final WeightedTable<PotentialTier> magicalTable;
+    private final EnumMap<PotentialType, WeightedTable<PotentialTier>> tables =
+            new EnumMap<>(PotentialType.class);
 
-    private final WeightedTable<PotentialTier> physicalTable;
-
-    private final WeightedTable<PotentialTier> mentalTable;
-
-    private final WeightedTable<PotentialTier> craftingTable;
-
-    private final WeightedTable<PotentialTier> socialTable;
-
-    public GenerationProfile(
-            WeightedTable<PotentialTier> magicalTable,
-            WeightedTable<PotentialTier> physicalTable,
-            WeightedTable<PotentialTier> mentalTable,
-            WeightedTable<PotentialTier> craftingTable,
-            WeightedTable<PotentialTier> socialTable
+    /**
+     * Associates a weighted table with a potential type.
+     */
+    public GenerationProfile put(
+            PotentialType type,
+            WeightedTable<PotentialTier> table
     ) {
 
-        this.magicalTable =
-                Objects.requireNonNull(magicalTable);
+        tables.put(
+                Objects.requireNonNull(type, "type"),
+                Objects.requireNonNull(table, "table")
+        );
 
-        this.physicalTable =
-                Objects.requireNonNull(physicalTable);
-
-        this.mentalTable =
-                Objects.requireNonNull(mentalTable);
-
-        this.craftingTable =
-                Objects.requireNonNull(craftingTable);
-
-        this.socialTable =
-                Objects.requireNonNull(socialTable);
+        return this;
     }
 
-    public WeightedTable<PotentialTier> getMagicalTable() {
-        return magicalTable;
+    /**
+     * Returns the weighted table for a potential.
+     */
+    public WeightedTable<PotentialTier> getTable(PotentialType type) {
+
+        WeightedTable<PotentialTier> table =
+                tables.get(Objects.requireNonNull(type, "type"));
+
+        if (table == null) {
+            throw new IllegalStateException(
+                    "No generation table registered for " + type
+            );
+        }
+
+        return table;
     }
 
-    public WeightedTable<PotentialTier> getPhysicalTable() {
-        return physicalTable;
-    }
-
-    public WeightedTable<PotentialTier> getMentalTable() {
-        return mentalTable;
-    }
-
-    public WeightedTable<PotentialTier> getCraftingTable() {
-        return craftingTable;
-    }
-
-    public WeightedTable<PotentialTier> getSocialTable() {
-        return socialTable;
+    /**
+     * Read-only view of all generation tables.
+     */
+    public Map<PotentialType, WeightedTable<PotentialTier>> getTables() {
+        return Map.copyOf(tables);
     }
 }

@@ -2,6 +2,7 @@ package com.gordimv.rezeroengine.character.generation;
 
 import com.gordimv.rezeroengine.character.CharacterPath;
 import com.gordimv.rezeroengine.character.PotentialTier;
+import com.gordimv.rezeroengine.character.PotentialType;
 import com.gordimv.rezeroengine.util.random.WeightedTable;
 
 /**
@@ -12,10 +13,8 @@ import com.gordimv.rezeroengine.util.random.WeightedTable;
  *
  * Contains every built-in CharacterPath generation profile.
  *
- * This class defines HOW characters are generated.
- *
- * CharacterGenerator should never contain hardcoded
- * probability values.
+ * CharacterGenerator never knows probabilities.
+ * It only asks for a GenerationProfile.
  * ============================================================
  */
 public final class CharacterGenerationProfiles {
@@ -23,9 +22,6 @@ public final class CharacterGenerationProfiles {
     private CharacterGenerationProfiles() {
     }
 
-    /**
-     * Returns the generation profile for a character path.
-     */
     public static GenerationProfile get(CharacterPath path) {
 
         return switch (path) {
@@ -48,57 +44,54 @@ public final class CharacterGenerationProfiles {
 
     private static GenerationProfile magicFocus() {
 
-        return new GenerationProfile(
+        return new GenerationProfile()
 
-                magicTable(),
+                .put(PotentialType.MAGICAL, magicTable())
 
-                balancedTable(),
+                .put(PotentialType.PHYSICAL, balancedTable())
 
-                balancedTable(),
+                .put(PotentialType.MENTAL, balancedTable())
 
-                balancedTable(),
+                .put(PotentialType.CRAFTING, balancedTable())
 
-                balancedTable()
-        );
+                .put(PotentialType.SOCIAL, balancedTable());
     }
 
     private static GenerationProfile physicalFocus() {
 
-        return new GenerationProfile(
+        return new GenerationProfile()
 
-                balancedTable(),
+                .put(PotentialType.MAGICAL, balancedTable())
 
-                physicalTable(),
+                .put(PotentialType.PHYSICAL, physicalTable())
 
-                balancedTable(),
+                .put(PotentialType.MENTAL, balancedTable())
 
-                balancedTable(),
+                .put(PotentialType.CRAFTING, balancedTable())
 
-                balancedTable()
-        );
+                .put(PotentialType.SOCIAL, balancedTable());
     }
 
     private static GenerationProfile balanced() {
 
-        return new GenerationProfile(
+        return new GenerationProfile()
 
-                balancedTable(),
+                .put(PotentialType.MAGICAL, balancedTable())
 
-                balancedTable(),
+                .put(PotentialType.PHYSICAL, balancedTable())
 
-                balancedTable(),
+                .put(PotentialType.MENTAL, balancedTable())
 
-                balancedTable(),
+                .put(PotentialType.CRAFTING, balancedTable())
 
-                balancedTable()
-        );
+                .put(PotentialType.SOCIAL, balancedTable());
     }
 
-    /*
+    /**
      * Temporary implementation.
      *
-     * Sprint 24 will replace this with
-     * the Fate generation engine.
+     * Sprint 3 will replace this with the
+     * Fate generation engine.
      */
     private static GenerationProfile fate() {
 
@@ -115,57 +108,56 @@ public final class CharacterGenerationProfiles {
 
         return new WeightedTable<PotentialTier>()
 
-                .add(PotentialTier.VERY_LOW,2)
+                .add(PotentialTier.VERY_LOW, 2)
 
-                .add(PotentialTier.LOW,8)
+                .add(PotentialTier.LOW, 8)
 
-                .add(PotentialTier.BELOW_AVERAGE,18)
+                .add(PotentialTier.BELOW_AVERAGE, 18)
 
-                .add(PotentialTier.AVERAGE,40)
+                .add(PotentialTier.AVERAGE, 40)
 
-                .add(PotentialTier.ABOVE_AVERAGE,20)
+                .add(PotentialTier.ABOVE_AVERAGE, 20)
 
-                .add(PotentialTier.HIGH,10)
+                .add(PotentialTier.HIGH, 10)
 
-                .add(PotentialTier.EXCEPTIONAL,2);
+                .add(PotentialTier.EXCEPTIONAL, 2);
     }
 
     private static WeightedTable<PotentialTier> magicTable() {
 
         return new WeightedTable<PotentialTier>()
 
-                .add(PotentialTier.VERY_LOW,1)
+                .add(PotentialTier.VERY_LOW, 1)
 
-                .add(PotentialTier.LOW,3)
+                .add(PotentialTier.LOW, 3)
 
-                .add(PotentialTier.BELOW_AVERAGE,10)
+                .add(PotentialTier.BELOW_AVERAGE, 10)
 
-                .add(PotentialTier.AVERAGE,26)
+                .add(PotentialTier.AVERAGE, 26)
 
-                .add(PotentialTier.ABOVE_AVERAGE,34)
+                .add(PotentialTier.ABOVE_AVERAGE, 34)
 
-                .add(PotentialTier.HIGH,20)
+                .add(PotentialTier.HIGH, 20)
 
-                .add(PotentialTier.EXCEPTIONAL,6);
+                .add(PotentialTier.EXCEPTIONAL, 6);
     }
 
     private static WeightedTable<PotentialTier> physicalTable() {
 
         return new WeightedTable<PotentialTier>()
 
-                .add(PotentialTier.VERY_LOW,1)
+                .add(PotentialTier.VERY_LOW, 1)
 
-                .add(PotentialTier.LOW,3)
+                .add(PotentialTier.LOW, 3)
 
-                .add(PotentialTier.BELOW_AVERAGE,10)
+                .add(PotentialTier.BELOW_AVERAGE, 10)
 
-                .add(PotentialTier.AVERAGE,26)
+                .add(PotentialTier.AVERAGE, 26)
 
-                .add(PotentialTier.ABOVE_AVERAGE,34)
+                .add(PotentialTier.ABOVE_AVERAGE, 34)
 
-                .add(PotentialTier.HIGH,20)
+                .add(PotentialTier.HIGH, 20)
 
-                .add(PotentialTier.EXCEPTIONAL,6);
+                .add(PotentialTier.EXCEPTIONAL, 6);
     }
-
 }

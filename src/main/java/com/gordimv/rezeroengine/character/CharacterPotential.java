@@ -1,5 +1,8 @@
 package com.gordimv.rezeroengine.character;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -8,81 +11,59 @@ import java.util.Objects;
  *
  * CharacterPotential
  *
- * Represents a player's innate natural aptitudes.
+ * Stores every innate aptitude belonging to a player.
  *
- * These values are hidden from the player and are used by
- * generation systems to create coherent characters.
+ * Each aptitude is represented by a PotentialValue.
  *
- * Potential is NOT skill.
- * Potential is what a player is born with.
- *
- * Skill is earned through gameplay.
+ * This class intentionally knows nothing about gameplay.
+ * It only stores generated character potential.
  * ============================================================
  */
 public final class CharacterPotential {
 
     /**
-     * Natural magical aptitude.
+     * Every generated aptitude.
      */
-    private PotentialTier magicalAptitude = PotentialTier.AVERAGE;
+    private final EnumMap<PotentialType, PotentialValue> potentials =
+            new EnumMap<>(PotentialType.class);
+
+    public CharacterPotential() {
+
+        for (PotentialType type : PotentialType.values()) {
+
+            potentials.put(type, new PotentialValue());
+
+        }
+    }
 
     /**
-     * Natural physical aptitude.
+     * Returns a potential.
      */
-    private PotentialTier physicalAptitude = PotentialTier.AVERAGE;
+    public PotentialValue get(PotentialType type) {
+
+        return potentials.get(
+                Objects.requireNonNull(type, "type")
+        );
+    }
 
     /**
-     * Natural mental aptitude.
+     * Replaces a generated potential.
      */
-    private PotentialTier mentalAptitude = PotentialTier.AVERAGE;
+    public void set(
+            PotentialType type,
+            PotentialValue value
+    ) {
+
+        potentials.put(
+                Objects.requireNonNull(type, "type"),
+                Objects.requireNonNull(value, "value")
+        );
+    }
 
     /**
-     * Natural crafting aptitude.
+     * Returns every potential.
      */
-    private PotentialTier craftingAptitude = PotentialTier.AVERAGE;
-
-    /**
-     * Natural social aptitude.
-     */
-    private PotentialTier socialAptitude = PotentialTier.AVERAGE;
-
-    public PotentialTier getMagicalAptitude() {
-        return magicalAptitude;
-    }
-
-    public void setMagicalAptitude(PotentialTier aptitude) {
-        magicalAptitude = Objects.requireNonNull(aptitude, "aptitude");
-    }
-
-    public PotentialTier getPhysicalAptitude() {
-        return physicalAptitude;
-    }
-
-    public void setPhysicalAptitude(PotentialTier aptitude) {
-        physicalAptitude = Objects.requireNonNull(aptitude, "aptitude");
-    }
-
-    public PotentialTier getMentalAptitude() {
-        return mentalAptitude;
-    }
-
-    public void setMentalAptitude(PotentialTier aptitude) {
-        mentalAptitude = Objects.requireNonNull(aptitude, "aptitude");
-    }
-
-    public PotentialTier getCraftingAptitude() {
-        return craftingAptitude;
-    }
-
-    public void setCraftingAptitude(PotentialTier aptitude) {
-        craftingAptitude = Objects.requireNonNull(aptitude, "aptitude");
-    }
-
-    public PotentialTier getSocialAptitude() {
-        return socialAptitude;
-    }
-
-    public void setSocialAptitude(PotentialTier aptitude) {
-        socialAptitude = Objects.requireNonNull(aptitude, "aptitude");
+    public Map<PotentialType, PotentialValue> getPotentials() {
+        return Collections.unmodifiableMap(potentials);
     }
 }
