@@ -1,10 +1,15 @@
 package com.gordimv.rezeroengine.character;
 
+import com.gordimv.rezeroengine.character.generation.CharacterGenerationProfiles;
+import com.gordimv.rezeroengine.character.generation.CharacterPotentialGenerator;
+import com.gordimv.rezeroengine.character.generation.GenerationContext;
+import com.gordimv.rezeroengine.character.generation.GenerationProfile;
 import com.gordimv.rezeroengine.magic.GateGenerator;
 import com.gordimv.rezeroengine.race.RaceGenerator;
 import com.gordimv.rezeroengine.save.PlayerData;
 
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * ============================================================
@@ -14,52 +19,74 @@ import java.util.Objects;
  *
  * Coordinates the complete character generation pipeline.
  *
- * This class never performs generation itself.
- * It delegates every generation step to dedicated systems.
+ * This class performs no gameplay generation itself.
+ * It only orchestrates specialized generators.
  * ============================================================
  */
 public final class CharacterGenerator {
 
     private final RaceGenerator raceGenerator;
+
+    private final CharacterPotentialGenerator potentialGenerator;
+
     private final GateGenerator gateGenerator;
 
     public CharacterGenerator() {
+
         this(
                 new RaceGenerator(),
+                new CharacterPotentialGenerator(),
                 new GateGenerator()
         );
     }
 
     public CharacterGenerator(
+
             RaceGenerator raceGenerator,
+
+            CharacterPotentialGenerator potentialGenerator,
+
             GateGenerator gateGenerator
     ) {
 
         this.raceGenerator =
-                Objects.requireNonNull(raceGenerator, "raceGenerator");
+                Objects.requireNonNull(raceGenerator);
+
+        this.potentialGenerator =
+                Objects.requireNonNull(potentialGenerator);
 
         this.gateGenerator =
-                Objects.requireNonNull(gateGenerator, "gateGenerator");
+                Objects.requireNonNull(gateGenerator);
     }
 
     public GenerationResult generate(PlayerData playerData) {
 
-        Objects.requireNonNull(playerData, "playerData");
+        Objects.requireNonNull(playerData);
+
+        CharacterPath path =
+                playerData
+                        .getCharacterProfile()
+                        .getPath();
+
+        GenerationProfile profile =
+                CharacterGenerationProfiles.get(path);
+
+        GenerationContext context =
+                new GenerationContext(
+                        playerData,
+                        profile,
+                        new Random()
+                );
 
         /*
          * =====================================================
-         * Character Generation Pipeline
+         * Generation Pipeline
          * =====================================================
-         *
-         * 1. Race
-         * 2. Gate
-         * 3. Magic Affinities
-         * 4. Physical Talent
-         * 5. Divine Protection
-         * 6. Future systems...
          */
 
         raceGenerator.generate(playerData);
+
+        potentialGenerator.generate(context);
 
         gateGenerator.generate(playerData);
 
@@ -74,13 +101,13 @@ public final class CharacterGenerator {
 
     /*
      * =========================================================
-     * Pipeline Steps
+     * Future Pipeline
      * =========================================================
      */
 
     private void generateMagic(PlayerData playerData) {
 
-        // Future MagicAffinityGenerator
+        // Future MagicGenerator
     }
 
     private void generatePhysicalTalent(PlayerData playerData) {
